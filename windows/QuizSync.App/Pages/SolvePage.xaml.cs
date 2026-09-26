@@ -25,7 +25,7 @@ public sealed partial class SolvePage : Page
         InitializeComponent();
     }
 
-    protected override void OnNavigatedTo(NavigationEventArgs e)
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
     {
         base.OnNavigatedTo(e);
         var config = AiSettings.Load();
@@ -38,6 +38,12 @@ public sealed partial class SolvePage : Page
 
         StatusText.Text = $"AI 就绪：{config.ProviderId}"
                         + (string.IsNullOrWhiteSpace(config.Model) ? string.Empty : $" · {config.Model}");
+
+        // 由全局热键进来的（参数 true）：直接开跑，用户按 F8 就是想立刻识别。
+        if (e.Parameter is true && AiSettings.IsUsable(config))
+        {
+            await RunCaptureAsync();
+        }
     }
 
     private void OnBackClick(object sender, RoutedEventArgs e)
@@ -52,7 +58,14 @@ public sealed partial class SolvePage : Page
         }
     }
 
-    private async void OnCaptureClick(object sender, RoutedEventArgs e)
+    /// <summary>按钮与**全局热键**走同一条流程（热键从 Host 页/别的窗口按下时也要能跑）。</summary>
+    private async void OnCaptureClick(object sender, RoutedEventArgs e) => await RunCaptureAsync();
+
+    /// <summary>
+    /// 截屏 → 识别 → 落库 → 推主机。界面上要如实显示三类状态，不糊弄：
+    /// AI 没配置（把该设的写清楚）、截图失败、识别失败（含「未识别到题目」这种正常的空结果）。
+    /// </summary>
+    private async Task RunCaptureAsync()
     {
         var config = AiSettings.Load();
         if (!AiSettings.IsUsable(config))
