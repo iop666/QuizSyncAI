@@ -34,11 +34,35 @@
                             <TextBlock Text="API Key" Style="{StaticResource QsTagTextStyle}" />
                             <PasswordBox x:Name="ApiKeyBox" AutomationProperties.Name="apikey 输入框" PlaceholderText="粘贴你的 Key" />
                             <TextBlock Style="{StaticResource QsSecondaryTextStyle}"
-                                       Text="⚠️ 目前明文存在本机 userdata/ai.json（与设备令牌同一处理）；接 DPAPI 是下一轮的事。" />
+                                       Text="🔒 保存在本机 userdata/ai.json，已用 DPAPI 加密（只有这台机器上的这个 Windows 账户能解开）。设备令牌同样已加密。注意：DPAPI 挡的是「文件被拷到别的机器/账户」，挡不住同一账户下运行的程序。" />
                         </StackPanel>
                         <StackPanel Spacing="4">
                             <TextBlock Text="模型名（model）" Style="{StaticResource QsTagTextStyle}" />
                             <TextBox x:Name="ModelBox" AutomationProperties.Name="model 输入框" PlaceholderText="例如 deepseek-chat" />
+                        </StackPanel>
+
+                        <!-- 悬浮球：改完点「应用」立刻生效（重建窗口），不用重启应用。 -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="悬浮球" Style="{StaticResource QsTagTextStyle}" />
+                            <ToggleSwitch x:Name="BallEnabledSwitch" AutomationProperties.Name="悬浮球开关"
+                                          Header="显示悬浮球（桌面右侧，点它等于按 F8）" />
+                            <TextBlock Text="大小（像素）" Style="{StaticResource QsSecondaryTextStyle}" />
+                            <Slider x:Name="BallSizeSlider" AutomationProperties.Name="悬浮球大小"
+                                    Minimum="24" Maximum="160" StepFrequency="4" />
+                            <TextBlock Text="不透明度（%）" Style="{StaticResource QsSecondaryTextStyle}" />
+                            <Slider x:Name="BallOpacitySlider" AutomationProperties.Name="悬浮球不透明度"
+                                    Minimum="20" Maximum="100" StepFrequency="5" />
+                            <Button x:Name="ApplyBallButton" Content="应用悬浮球设置"
+                                    HorizontalAlignment="Stretch" Click="OnApplyBallClick" />
+                        </StackPanel>
+
+                        <!-- 连接设备：复用配对页那套（控制面读配对码）。 -->
+                        <StackPanel Spacing="6">
+                            <TextBlock Text="连接设备" Style="{StaticResource QsTagTextStyle}" />
+                            <TextBlock x:Name="HostText" Style="{StaticResource QsSecondaryTextStyle}"
+                                       TextWrapping="Wrap" Text="点下面的按钮查看配对码与已配对设备。" />
+                            <Button x:Name="RefreshHostButton" Content="查看配对码与设备"
+                                    HorizontalAlignment="Stretch" Click="OnRefreshHostClick" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

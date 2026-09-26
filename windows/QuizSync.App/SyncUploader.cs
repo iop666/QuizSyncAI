@@ -38,7 +38,7 @@ public static class SyncUploader
         var client = new HostClient(baseUrl);
 
         var tokenPath = Path.Combine(directory, TokenFile);
-        var token = File.Exists(tokenPath) ? File.ReadAllText(tokenPath).Trim() : null;
+        var token = File.Exists(tokenPath) ? SecretStore.Unprotect(File.ReadAllText(tokenPath).Trim()) : null;
         if (string.IsNullOrEmpty(token))
         {
             // 自己跟主机配对：配对码本来就是我们（控制面）读出来显示给用户的。
@@ -50,14 +50,28 @@ public static class SyncUploader
                 throw new InvalidOperationException("读不到配对码，无法取得设备令牌");
             }
 
-            var issued = await client.PairAsync(code!, DeviceId, Environment.MachineName).ConfigureAwait(false);
-            token = issued?["token"]?.ToString();
+            string? issuedToken = null;
+            try
+            {
+                var issued = await client.PairAsync(code!, DeviceId, Environment.MachineName).ConfigureAwait(false);
+                issuedToken = issued?["token"]?.ToString();
+            }
+            catch (HostException error) when (error.StatusCode == 409)
+            {
+                // **409 = 重复配对，在协议里算成功**（服务端照样发新 token，见 spec/04-http-api.md；
+                // Android 侧一直按这个语义处理，Windows 侧原来漏了 —— 第二十三轮实测撞到）。
+                // `HostClient` 对非 2xx 一律抛异常，而异常的 Message 就是响应体，所以从这里取 token。
+                issuedToken = System.Text.Json.Nodes.JsonNode.Parse(error.Message)?["token"]?.ToString();
+            }
+
+            token = issuedToken;
             if (string.IsNullOrWhiteSpace(token))
             {
                 throw new InvalidOperationException("主机没有返回访问令牌");
             }
 
-            File.WriteAllText(tokenPath, token);
+            // **加密落盘**（与 AI Key 同一套 `SecretStore`）：设备令牌原来也是明文。
+            File.WriteAllText(tokenPath, SecretStore.Protect(token));
         }
 
         client.UseToken(token);

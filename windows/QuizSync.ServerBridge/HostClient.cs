@@ -24,6 +24,10 @@ public sealed class HostClient(string baseUrl, HttpClient? client = null)
         await SendAsync(HttpMethod.Get, "/health", null, authenticated: false, cancellationToken).ConfigureAwait(false);
 
     /// <summary>`POST /api/v1/pair`；成功（200/409）时**自动记住 token**。</summary>
+    /// <summary>`GET /api/v1/devices`（已配对设备列表；界面「连接设备」用）。</summary>
+    public Task<JsonObject?> DevicesAsync(CancellationToken cancellationToken = default) =>
+        SendAsync(HttpMethod.Get, "/api/v1/devices", null, authenticated: true, cancellationToken);
+
     public async Task<JsonObject?> PairAsync(
         string code, string deviceId, string deviceName, string platform = "windows", string appVersion = "2.0.0",
         CancellationToken cancellationToken = default)

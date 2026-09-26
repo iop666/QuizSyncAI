@@ -33,6 +33,13 @@ public static class HostDataDirectory
             list.Add(fromEnvironment);
         }
 
+        // **共享数据目录优先**（第二十三轮）：应用与服务端是两个 exe，
+        // 各自用 `AppContext.BaseDirectory/userdata` 的话根本不在一个地方 ——
+        // 实测后果是「连接设备/显示配对码/推送」全都读不到 control.token，
+        // 而普通用户不会去设 `QS_SERVER_DATA`。所以约定一个双方都认的位置。
+        list.Add(SharedLayout.ServerDirectory);
+
+        // 老位置留作兜底（开发时直接在 exe 旁边跑）。
         list.Add(Path.Combine(AppContext.BaseDirectory, "userdata"));
         return list;
     }
@@ -70,15 +77,39 @@ public static class HostDataDirectory
 /// 于是报 `no such column: prompt_version`（服务端的库压根没有 analysis_cache 表）。
 ///
 /// 服务端目录**只用来读 `control.token`**（配对），本地库一律走这里。
-/// （遗留问题记在 `docs/DECISIONS.md`：等应用内嵌服务端时，这两者是否合并成一个数据目录，
-/// 到 Phase 6/7 一并定。）
 /// </summary>
+public static class SharedLayout
+{
+    /// <summary>
+    /// 共享根：`%LOCALAPPDATA%\QuizSyncAI`。
+    ///
+    /// **为什么要它**（第二十二轮实测）：应用与服务端是两个 exe，各自用
+    /// `AppContext.BaseDirectory/userdata` → 不在同一个地方 → 应用读不到服务端的 `control.token`，
+    /// 于是「显示配对码 / 连接设备 / 推送」整条链对真实用户是**断的**
+    /// （我之前的验证全靠 `QS_SERVER_DATA` 把它们接上，那是我开发时的私有手段）。
+    /// </summary>
+    public static string Root
+    {
+        get
+        {
+            var local = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            return Path.Combine(local, "QuizSyncAI");
+        }
+    }
+
+    /// <summary>服务端的数据目录（库 + `control.token`）。</summary>
+    public static string ServerDirectory => Path.Combine(Root, "server");
+
+    /// <summary>应用自己的数据目录（本地库 + `ai.json` + `device.token` + 水位）。</summary>
+    public static string AppDirectory => Path.Combine(Root, "app");
+}
+
 public static class AppDataDirectory
 {
     /// <summary>本地库目录（保证存在）。</summary>
     public static string Ensure()
     {
-        var directory = Path.Combine(AppContext.BaseDirectory, "userdata");
+        var directory = SharedLayout.AppDirectory;
         Directory.CreateDirectory(directory);
         return directory;
     }

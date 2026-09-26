@@ -46,7 +46,8 @@ public static class AiSettings
             {
                 ProviderId = json["provider_id"]?.ToString() is { Length: > 0 } provider ? provider : "openai-compatible",
                 BaseUrl = json["base_url"]?.ToString() ?? string.Empty,
-                ApiKey = json["api_key"]?.ToString() ?? string.Empty,
+                // 落盘的是密文（`dpapi:` 前缀），这里解回明文；老配置里的明文原样通过。
+                ApiKey = SecretStore.Unprotect(json["api_key"]?.ToString() ?? string.Empty),
                 Model = json["model"]?.ToString() ?? string.Empty,
             };
         }
@@ -64,7 +65,9 @@ public static class AiSettings
         {
             ["provider_id"] = config.ProviderId,
             ["base_url"] = config.BaseUrl,
-            ["api_key"] = config.ApiKey,
+            // **加密落盘**（DPAPI, CurrentUser）：挡住「文件被拷到别的机器/账户」这类风险。
+            // 注意它挡不住同一用户下运行的程序 —— 别把它当保险箱。
+            ["api_key"] = SecretStore.Protect(config.ApiKey),
             ["model"] = config.Model,
             ["timeout_seconds"] = config.TimeoutSeconds,
             ["max_retries"] = config.MaxRetries,
