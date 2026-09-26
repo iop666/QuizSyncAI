@@ -72,7 +72,7 @@ public static class Program
         }
 
         Directory.CreateDirectory(dataDir);
-        using var database = QuizDatabase.CreateFromProtocolSchema(Path.Combine(dataDir, "quizsync.db"));
+        using var database = QuizDatabase.OpenOrCreate(Path.Combine(dataDir, "quizsync.db"));
         using var http = new HttpClient { Timeout = TimeSpan.FromSeconds(config.TimeoutSeconds + 30) };
         var engine = new AnalysisEngine(
             new HttpAiProvider(config.ProviderId, http),

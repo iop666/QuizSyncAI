@@ -27,6 +27,7 @@
   <ItemGroup>
     <ProjectReference Include="..\QuizSync.Core\QuizSync.Core.csproj" />
     <ProjectReference Include="..\QuizSync.Data\QuizSync.Data.csproj" />
+    <ProjectReference Include="..\QuizSync.Provider\QuizSync.Provider.csproj" />
     <ProjectReference Include="..\QuizSync.ServerBridge\QuizSync.ServerBridge.csproj" />
   </ItemGroup>
 

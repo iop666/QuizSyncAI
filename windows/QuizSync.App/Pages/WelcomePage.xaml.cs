@@ -14,6 +14,10 @@ public sealed partial class WelcomePage : Page
     private void OnShowPairCodeClick(object sender, RoutedEventArgs e) =>
         Frame.Navigate(typeof(PairPage));
 
+    /// <summary>核心旅程：截屏搜题（不是配对 —— 配对只是前提，搜题才是产品本身）。</summary>
+    private void OnSolveClick(object sender, RoutedEventArgs e) =>
+        Frame.Navigate(typeof(SolvePage));
+
     /// <summary>
     /// 诊断读数（表数 / 提示词版本）**按需展开**，不常驻首屏状态条（评审：状态条只说用户语言）。
     /// </summary>

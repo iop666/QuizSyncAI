@@ -73,11 +73,17 @@
                 </StackPanel>
 
                 <Button
-                    x:Name="FindHostButton"
-                    Content="显示配对码"
+                    x:Name="SolveButton"
+                    Content="截屏搜题"
                     Style="{StaticResource QsPrimaryButtonStyle}"
                     HorizontalAlignment="Stretch"
                     Margin="0,4,0,0"
+                    Click="OnSolveClick" />
+
+                <Button
+                    x:Name="FindHostButton"
+                    Content="显示配对码"
+                    HorizontalAlignment="Stretch"
                     Click="OnShowPairCodeClick" />
 
                 <HyperlinkButton

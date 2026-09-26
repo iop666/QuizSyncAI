@@ -24,10 +24,20 @@ public sealed class QuizDatabase : IDisposable
     public static QuizDatabase Create(string path, string schemaSql)
     {
         var database = Connect(path);
-        using var command = database._connection.CreateCommand();
-        command.CommandText = schemaSql;
-        command.ExecuteNonQuery();
-        return database;
+        try
+        {
+            using var command = database._connection.CreateCommand();
+            command.CommandText = schemaSql;
+            command.ExecuteNonQuery();
+            return database;
+        }
+        catch
+        {
+            // DDL 抛了就把连接关掉再往外抛：否则失败的建库会**一直占着库文件**
+            // （实测：对既有库再跑 DDL 时抛索引已存在，随后连删临时库文件都失败）。
+            database.Dispose();
+            throw;
+        }
     }
 
     /// <summary>从协议仓的 schema 文件建库。</summary>
@@ -36,6 +46,35 @@ public sealed class QuizDatabase : IDisposable
 
     /// <summary>打开一个**已经建好**的库（不执行 DDL）。</summary>
     public static QuizDatabase OpenExisting(string path) => Connect(path);
+
+    /// <summary>
+    /// 打开已存在的库；**不存在才建**。日常入口一律用这个。
+    ///
+    /// 为什么需要它（第八轮实测抓到的真 bug）：协议 DDL 不幂等，而 `CreateFromProtocolSchema`
+    /// 的语义是「建库」。界面（`SolvePage`）与 `Provider.Cli analyze` 原来都直接调它，
+    /// 于是**对已经存在的库再跑一遍 DDL**，抛
+    /// `SQLite Error 1: 'index idx_images_created already exists'`。
+    /// 命令行之所以没暴露，是因为我每次验证都换个新的数据目录；
+    /// 界面第一次跑就撞上了（它用的是服务端那个已经建好的库）。
+    /// 类注释里其实早就写明「首次建库与打开既有库是两条路」—— 但调用方没有这条快捷方式，
+    /// 就都会顺手选错。
+    /// </summary>
+    public static QuizDatabase OpenOrCreate(string path) =>
+        HasSchema(path) ? OpenExisting(path) : CreateFromProtocolSchema(path);
+
+    /// <summary>库里是否已经有协议表结构（用 `images` 当探针）。</summary>
+    private static bool HasSchema(string path)
+    {
+        if (path == ":memory:" || !File.Exists(path))
+        {
+            return false;
+        }
+
+        using var database = Connect(path);
+        using var command = database._connection.CreateCommand();
+        command.CommandText = "SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name='images'";
+        return Convert.ToInt32(command.ExecuteScalar(), System.Globalization.CultureInfo.InvariantCulture) > 0;
+    }
 
     /// <summary>
     /// 协议仓的位置：环境变量 `QS_PROTOCOL_DIR`，否则从当前目录往上找同级的

@@ -59,3 +59,30 @@ public static class HostDataDirectory
              + $"请先运行 QuizSync.Server.Cli run，或用环境变量 {OverrideVariable} 指向服务端的数据目录。";
     }
 }
+
+/// <summary>
+/// **应用自己的**数据目录 —— 与上面那个「服务端数据目录」是两件事，别混。
+///
+/// 为什么必须分开（第八轮踩到）：`quizsync.db` 这个名字在两边都叫一样，但**结构不同** ——
+/// 服务端的库是 11 张表（`devices`/`images`/`sync_ops`/`tasks`…，协议中转用的），
+/// 客户端本地的库是协议 schema 的 **16 张表**（多出 `analysis_cache`、`questions`、
+/// `sessions` 等本地表）。一开始我把应用的 `AnalysisCache` 指到了服务端目录，
+/// 于是报 `no such column: prompt_version`（服务端的库压根没有 analysis_cache 表）。
+///
+/// 服务端目录**只用来读 `control.token`**（配对），本地库一律走这里。
+/// （遗留问题记在 `docs/DECISIONS.md`：等应用内嵌服务端时，这两者是否合并成一个数据目录，
+/// 到 Phase 6/7 一并定。）
+/// </summary>
+public static class AppDataDirectory
+{
+    /// <summary>本地库目录（保证存在）。</summary>
+    public static string Ensure()
+    {
+        var directory = Path.Combine(AppContext.BaseDirectory, "userdata");
+        Directory.CreateDirectory(directory);
+        return directory;
+    }
+
+    /// <summary>本地库文件路径。</summary>
+    public static string DatabasePath() => Path.Combine(Ensure(), "quizsync.db");
+}
