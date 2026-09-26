@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- ServerBridge（计划 §7.2）：连接/内嵌 Server 的适配层 —— 端口探测、控制令牌发现、
+       单实例互斥、客户端调用。不碰 UI，可单测。 -->
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuizSync.Core\QuizSync.Core.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 本文件由 tools/gen_design_tokens.py 从 design/tokens.json 生成，请勿手改。 -->
+<resources>
+    <color name="qs_brand_primary">#35693E</color>
+    <color name="qs_on_brand_primary">#FFFFFF</color>
+    <color name="qs_brand_seed">#16A34A</color>
+    <color name="qs_canvas">#F3F5F4</color>
+    <color name="qs_surface">#FFFFFF</color>
+    <color name="qs_on_surface">#181D18</color>
+    <color name="qs_on_surface_variant">#414941</color>
+    <color name="qs_outline">#727970</color>
+    <color name="qs_card_stroke">#E3E7E5</color>
+</resources>

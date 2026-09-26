@@ -1,0 +1,8 @@
+<Solution>
+  <Project Path="QuizSync.Core/QuizSync.Core.csproj" />
+  <Project Path="QuizSync.Data/QuizSync.Data.csproj" />
+  <Project Path="QuizSync.Provider.Cli/QuizSync.Provider.Cli.csproj" />
+  <Project Path="QuizSync.Provider/QuizSync.Provider.csproj" />
+  <Project Path="QuizSync.ServerBridge/QuizSync.ServerBridge.csproj" />
+  <Project Path="QuizSync.Tests/QuizSync.Tests.csproj" />
+</Solution>

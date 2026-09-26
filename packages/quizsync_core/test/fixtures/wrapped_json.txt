@@ -1,0 +1,5 @@
+识别完成。结果如下：
+
+{"questions":[{"question_no":"7","stem":"中华人民共和国成立于哪一年？","type":"single","options":[{"label":"A","text":"1949年"},{"label":"B","text":"1950年"}],"answer":{"choice":["A"],"text":null},"analysis":"1949年10月1日。","confidence":0.98,"need_review":false,"has_answer_in_image":false,"warnings":[]}]}
+
+如果还需要识别其他题目，请告诉我。

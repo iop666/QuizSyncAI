@@ -1,0 +1,3 @@
+# 测试方法名用 `被测量_场景_期望` 可读性优先，与 CA1707 冲突，故只在本目录关掉。
+[*.cs]
+dotnet_diagnostic.CA1707.severity = none

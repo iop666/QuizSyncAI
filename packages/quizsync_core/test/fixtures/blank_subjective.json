@@ -1,0 +1,31 @@
+{
+  "questions": [
+    {
+      "question_no": "(1)",
+      "stem": "计算：$\\int_0^1 2x \\, dx$ = ？",
+      "type": "blank",
+      "options": [],
+      "answer": { "choice": null, "text": "1" },
+      "analysis": "$$\\int_0^1 2x\\,dx = [x^2]_0^1 = 1$$",
+      "confidence": 0.97,
+      "need_review": false,
+      "has_answer_in_image": false,
+      "warnings": []
+    },
+    {
+      "question_no": "(2)",
+      "stem": "简述光的折射定律。",
+      "type": "subjective",
+      "options": [],
+      "answer": {
+        "choice": null,
+        "text": "折射光线、入射光线和法线在同一平面内；折射光线与入射光线分居法线两侧；入射角的正弦与折射角的正弦之比为一个常数。"
+      },
+      "analysis": "即 $\\frac{\\sin i}{\\sin r} = n$（折射定律 / 斯涅尔定律）。",
+      "confidence": 0.55,
+      "need_review": true,
+      "has_answer_in_image": false,
+      "warnings": ["图形信息不足"]
+    }
+  ]
+}

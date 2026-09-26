@@ -1,0 +1,14 @@
+# Gradle wrapper **必须进版本库**：源码包（tools/package_source.ps1）会带上
+# gradlew / gradlew.bat / gradle-wrapper.jar，如果这里继续忽略它们，用户把源码包
+# `git init && git add .` 之后 wrapper 就没了，安卓端再也构建不起来（M47）。
+/.gradle
+/captures/
+/local.properties
+GeneratedPluginRegistrant.java
+.cxx/
+
+# Remember to never publicly share your keystore.
+# See https://flutter.dev/to/reference-keystore
+key.properties
+**/*.keystore
+**/*.jks

@@ -1,0 +1,58 @@
+name: quizsync_desktop
+description: "QuizSync AI — Windows 端（截屏采集、AI 分析、内置服务端）。"
+publish_to: 'none'
+# 1.0.1 = Windows 端第二次正式发布（M32 用户需求 6；M33 是同一版本的续改，
+# 产品版本不变，只顶出包序号；安卓端仍是 1.0.0，等后续统一更新）。
+# `+N` 只是内部出包序号，不进 exe 属性、也不进界面
+# （见 windows\runner\Runner.rc 与 state\app_info.dart）。
+# M50：1.1.0 之后的修复线从 **1.2.0** 起，第三个数字每出一个包 +1，不设上限。
+version: 1.2.1+35
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  quizsync_core:
+    path: ../../packages/quizsync_core
+  quizsync_ui:
+    path: ../../packages/quizsync_ui
+  drift: ^2.20.0
+  flutter_riverpod: ^2.5.1
+  window_manager: ^0.4.0
+  tray_manager: ^0.2.0
+  hotkey_manager: ^0.2.0
+  win32: ^5.5.0
+  ffi: ^2.1.0
+  image: ^4.2.0
+  path_provider: ^2.1.4
+  desktop_drop: ^0.4.4
+  qr_flutter: ^4.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - windows/runner/resources/app_icon.ico
+    # 托盘图标（由 icon/Statusbar.png 生成，见 tool/make_icons.dart）
+    - assets/statusbar.ico
+    # 关于页的应用图标（由 icon/QuizSync_AI.png 生成，带圆角）
+    - assets/app_icon.png
+    # 悬浮球三态（用户反馈 11；由 icon/FloatingBall_*.png 去白底 + 圆形化生成）
+    - assets/floating_ball_default.png
+    - assets/floating_ball_detecting.png
+    - assets/floating_ball_multipage.png
+  fonts:
+    # 用户反馈 1：界面统一用 MiSans。这里用可变字体（VF），一个文件覆盖
+    # 100–900 字重，题目字重直接在设置里调（fontVariations 的 wght 轴）。
+    # 许可：MiSans 免费商用（https://hyperos.mi.com/font/faq），
+    # 但不得单独售卖/再分发字体文件本身。
+    - family: MiSans
+      fonts:
+        - asset: assets/fonts/MiSans-VF.ttf
+

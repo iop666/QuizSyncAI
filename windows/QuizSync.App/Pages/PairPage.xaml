@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="QuizSync.App.Pages.PairPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 配对页（第一个真页面）：显示**真实服务端**给的 6 位配对码 + 有效期倒计时。
+         数据来自 GET /api/v1/pair/code，响应字段就是服务端写的那些：
+         code / expires_at / device_id / device_name / port / pair_uri。
+         没有服务端、或读不到控制令牌时**如实说明找过哪些目录**，不假装有码。 -->
+    <Grid Background="{ThemeResource QsCanvasBrush}" RowDefinitions="*,Auto">
+        <Border
+            Grid.Row="0"
+            Style="{StaticResource QsCardStyle}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Width="460">
+            <StackPanel Spacing="16">
+                <TextBlock
+                    Text="配对手机"
+                    FontSize="24"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    Foreground="{ThemeResource QsOnSurfaceBrush}" />
+                <TextBlock
+                    Text="在手机上打开 AI 双端搜题，输入下面这 6 位码"
+                    Style="{StaticResource QsSecondaryTextStyle}"
+                    TextAlignment="Center" />
+
+                <!-- 配对码：等宽大字、分成两组，避免念错 -->
+                <TextBlock
+                    x:Name="CodeText"
+                    Text="· · · · · ·"
+                    FontSize="44"
+                    FontFamily="Consolas"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    CharacterSpacing="120"
+                    Foreground="{ThemeResource QsBrandPrimaryBrush}" />
+
+                <TextBlock
+                    x:Name="ExpiryText"
+                    Style="{StaticResource QsSecondaryTextStyle}"
+                    TextAlignment="Center"
+                    Text="" />
+
+                <TextBlock
+                    x:Name="HostText"
+                    Style="{StaticResource QsSecondaryTextStyle}"
+                    TextAlignment="Center"
+                    TextWrapping="Wrap"
+                    Text="" />
+
+                <Button
+                    x:Name="RefreshButton"
+                    Content="换一个码"
+                    Style="{StaticResource QsPrimaryButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Click="OnRefreshClick" />
+
+                <HyperlinkButton
+                    Content="返回"
+                    HorizontalAlignment="Center"
+                    Click="OnBackClick" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource QsStatusBarBorderStyle}">
+            <TextBlock
+                x:Name="StatusText"
+                Style="{StaticResource QsStatusTextStyle}"
+                Text="正在读取配对码…" />
+        </Border>
+    </Grid>
+</Page>

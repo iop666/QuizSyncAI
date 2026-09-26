@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 局域网协议**按设计就是明文 HTTP**（见 QuizSyncProtocol/spec/04-http-api.md）：
+         主机是用户自己电脑上的一个本机服务端，没有域名也没有证书可用；
+         安全性来自「配对令牌 + 只在局域网内可达」，不是 TLS。
+
+         但 Android 9（API 28）起系统默认**禁止明文流量**，不开口子就报
+         `CLEARTEXT communication to 192.168.x.x not permitted by network security policy`
+         ——第六轮实测：手机走局域网地址配对时正是被这一条挡住的（症状看着像「连不上电脑」，
+         其实网络是通的，是策略拦的）。
+
+         这里只作为 base-config 放行；将来若接入任何公网域名，那条要单独收紧。 -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

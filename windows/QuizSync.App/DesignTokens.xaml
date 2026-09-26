@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 本文件由 tools/gen_design_tokens.py 从 design/tokens.json 生成，请勿手改。
+     校验：跑一次 tools/gen_design_tokens.py，加参数 check。
+     值来自老应用（1.1.0）的视觉契约 packages/quizsync_ui，不要在这里手改数值。
+
+     生成时逐条校验过的 WCAG 对比度：
+     主按钮文字 / 填充: 6.48:1（下限 4.5:1）
+     主按钮文字 / 填充（暗）: 7.73:1（下限 4.5:1）
+     正文 / 卡片: 17.10:1（下限 4.5:1）
+     正文 / 卡片（暗）: 14.33:1（下限 4.5:1）
+     次要文字 / 页面底色: 8.51:1（下限 4.5:1）
+     次要文字 / 页面底色（暗）: 11.14:1（下限 4.5:1）
+     标签描边 / 卡片: 4.48:1（下限 3.0:1）
+     标签描边 / 卡片（暗）: 5.83:1（下限 3.0:1）
+-->
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="QsBrandPrimaryBrush" Color="#FF35693E"/>
+            <SolidColorBrush x:Key="QsOnBrandPrimaryBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="QsBrandSeedBrush" Color="#FF16A34A"/>
+            <SolidColorBrush x:Key="QsCanvasBrush" Color="#FFF3F5F4"/>
+            <SolidColorBrush x:Key="QsSurfaceBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="QsOnSurfaceBrush" Color="#FF181D18"/>
+            <SolidColorBrush x:Key="QsOnSurfaceVariantBrush" Color="#FF414941"/>
+            <SolidColorBrush x:Key="QsOutlineBrush" Color="#FF727970"/>
+            <SolidColorBrush x:Key="QsCardStrokeBrush" Color="#FFE3E7E5"/>
+            <!-- AccentButtonStyle 的交互态一起跟着 token 走 -->
+            <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#FF35693E"/>
+            <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#FF35693E" Opacity="0.9"/>
+            <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#FF35693E" Opacity="0.8"/>
+            <SolidColorBrush x:Key="AccentFillColorDisabledBrush" Color="#FF35693E" Opacity="0.4"/>
+            <Color x:Key="SystemAccentColor">#FF35693E</Color>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="QsBrandPrimaryBrush" Color="#FF9CD4A0"/>
+            <SolidColorBrush x:Key="QsOnBrandPrimaryBrush" Color="#FF003914"/>
+            <SolidColorBrush x:Key="QsBrandSeedBrush" Color="#FF16A34A"/>
+            <SolidColorBrush x:Key="QsCanvasBrush" Color="#FF0F1113"/>
+            <SolidColorBrush x:Key="QsSurfaceBrush" Color="#FF101510"/>
+            <SolidColorBrush x:Key="QsOnSurfaceBrush" Color="#FFE0E4DB"/>
+            <SolidColorBrush x:Key="QsOnSurfaceVariantBrush" Color="#FFC1C9BE"/>
+            <SolidColorBrush x:Key="QsOutlineBrush" Color="#FF8B9389"/>
+            <SolidColorBrush x:Key="QsCardStrokeBrush" Color="#FF2A2F33"/>
+            <!-- AccentButtonStyle 的交互态一起跟着 token 走 -->
+            <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#FF9CD4A0"/>
+            <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#FF9CD4A0" Opacity="0.9"/>
+            <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#FF9CD4A0" Opacity="0.8"/>
+            <SolidColorBrush x:Key="AccentFillColorDisabledBrush" Color="#FF9CD4A0" Opacity="0.4"/>
+            <Color x:Key="SystemAccentColor">#FF9CD4A0</Color>
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="HighContrast">
+            <SolidColorBrush x:Key="QsBrandPrimaryBrush" Color="#FF35693E"/>
+            <SolidColorBrush x:Key="QsOnBrandPrimaryBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="QsBrandSeedBrush" Color="#FF16A34A"/>
+            <SolidColorBrush x:Key="QsCanvasBrush" Color="#FFF3F5F4"/>
+            <SolidColorBrush x:Key="QsSurfaceBrush" Color="#FFFFFFFF"/>
+            <SolidColorBrush x:Key="QsOnSurfaceBrush" Color="#FF181D18"/>
+            <SolidColorBrush x:Key="QsOnSurfaceVariantBrush" Color="#FF414941"/>
+            <SolidColorBrush x:Key="QsOutlineBrush" Color="#FF727970"/>
+            <SolidColorBrush x:Key="QsCardStrokeBrush" Color="#FFE3E7E5"/>
+            <!-- AccentButtonStyle 的交互态一起跟着 token 走 -->
+            <SolidColorBrush x:Key="AccentFillColorDefaultBrush" Color="#FF35693E"/>
+            <SolidColorBrush x:Key="AccentFillColorSecondaryBrush" Color="#FF35693E" Opacity="0.9"/>
+            <SolidColorBrush x:Key="AccentFillColorTertiaryBrush" Color="#FF35693E" Opacity="0.8"/>
+            <SolidColorBrush x:Key="AccentFillColorDisabledBrush" Color="#FF35693E" Opacity="0.4"/>
+            <Color x:Key="SystemAccentColor">#FF35693E</Color>
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+
+    <!-- 主按钮：圆角 10（AppRadius.control，M9 按 Fluent 观感收的值），品牌绿填充。
+         第五轮教训：这里曾经被改成 999 胶囊，是往我凭空发明的规格上拉。 -->
+    <Style x:Key="QsPrimaryButtonStyle" TargetType="Button" BasedOn="{StaticResource AccentButtonStyle}">
+        <Setter Property="Background" Value="{ThemeResource QsBrandPrimaryBrush}" />
+        <Setter Property="Foreground" Value="{ThemeResource QsOnBrandPrimaryBrush}" />
+        <Setter Property="BorderBrush" Value="{ThemeResource QsBrandPrimaryBrush}" />
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="20,8" />
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="UseSystemFocusVisuals" Value="True" />
+    </Style>
+
+    <!-- 能力标签：圆角 999（AppRadius.chip = 全胶囊），描边用 outline
+         （**功能边界**要用 outline，不能用 cardStroke —— 后者对比度天生很低，是装饰用的）。 -->
+    <Style x:Key="QsTagBorderStyle" TargetType="Border">
+        <Setter Property="Padding" Value="10,4" />
+        <Setter Property="CornerRadius" Value="999" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{ThemeResource QsOutlineBrush}" />
+        <Setter Property="Background" Value="{ThemeResource QsSurfaceBrush}" />
+    </Style>
+
+    <!-- Fluent 卡片：圆角 16（AppRadius.card）+ 装饰描边（cardStroke）。 -->
+    <Style x:Key="QsCardStyle" TargetType="Border">
+        <Setter Property="CornerRadius" Value="16" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="BorderBrush" Value="{ThemeResource QsCardStrokeBrush}" />
+        <Setter Property="Background" Value="{ThemeResource QsSurfaceBrush}" />
+        <Setter Property="Padding" Value="24" />
+    </Style>
+
+    <!-- 底部状态条：通栏条带，底色 = 页面底色 canvas、文字 = 次要文字。 -->
+    <Style x:Key="QsStatusBarBorderStyle" TargetType="Border">
+        <Setter Property="Padding" Value="16,8" />
+        <Setter Property="BorderThickness" Value="0,1,0,0" />
+        <Setter Property="BorderBrush" Value="{ThemeResource QsCardStrokeBrush}" />
+        <Setter Property="Background" Value="{ThemeResource QsCanvasBrush}" />
+    </Style>
+
+    <Style x:Key="QsStatusTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{ThemeResource QsOnSurfaceVariantBrush}" />
+    </Style>
+
+    <Style x:Key="QsTagTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Foreground" Value="{ThemeResource QsOnSurfaceVariantBrush}" />
+    </Style>
+
+    <Style x:Key="QsBodyTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="14" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{ThemeResource QsOnSurfaceBrush}" />
+    </Style>
+
+    <Style x:Key="QsSecondaryTextStyle" TargetType="TextBlock">
+        <Setter Property="FontSize" Value="13" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+        <Setter Property="Foreground" Value="{ThemeResource QsOnSurfaceVariantBrush}" />
+    </Style>
+</ResourceDictionary>

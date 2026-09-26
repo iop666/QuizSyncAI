@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 与主机通信：局域网明文 HTTP + 局域网发现。 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+        android:label="AI 双端搜题（开发版）"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.QuizSync">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="AI 双端搜题（开发版）">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- 配对深链 `quizsync://pair?host=…&port=…&code=…`：
+                 电脑端 /api/v1/pair/code 返回的 pair_uri 就是它，二维码里放的也是它。
+                 手机扫码/点链接即可配对，不用手输地址与码。 -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="quizsync" android:host="pair" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

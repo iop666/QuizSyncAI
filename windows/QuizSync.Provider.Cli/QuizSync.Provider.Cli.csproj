@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <AssemblyName>QuizSync.Provider.Cli</AssemblyName>
+    <RootNamespace>QuizSync.Provider.Cli</RootNamespace>
+    <!-- 显式声明 Windows 专用：`analyze` 走 GDI 截屏、`doctor`/热键走 user32。
+         不声明的话，调用 `ScreenJpeg` 会被 CA1416 拦下（分析器会一直往上传染到 Main）。 -->
+    <TargetFramework>net10.0-windows</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\QuizSync.Core\QuizSync.Core.csproj" />
+    <ProjectReference Include="..\QuizSync.Data\QuizSync.Data.csproj" />
+    <ProjectReference Include="..\QuizSync.Provider\QuizSync.Provider.csproj" />
+    <ProjectReference Include="..\QuizSync.ServerBridge\QuizSync.ServerBridge.csproj" />
+  </ItemGroup>
+
+</Project>

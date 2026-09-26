@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="accessibility_capture_desc">仅用于备选截屏方式（takeScreenshot）。不读取屏幕内容、不监听任何事件。</string>
+</resources>

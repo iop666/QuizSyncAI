@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="QuizSync.App.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="AI 双端搜题">
+    <!-- 主窗口只做导航宿主。样式取值一律走共享 token（App.xaml 合并的 DesignTokens.xaml，
+         与 Android 的 QsTokens 同源，值来自老应用 1.1.0 的视觉契约 packages/quizsync_ui）。 -->
+    <Frame x:Name="RootFrame" Background="{ThemeResource QsCanvasBrush}" />
+</Window>

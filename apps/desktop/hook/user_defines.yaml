@@ -1,0 +1,6 @@
+# sqlite3 包的原生资产改为查找系统库：
+# GitHub Releases 下载在本机不稳定（超时），而 Windows 10+ 自带 winsqlite3.dll
+# 且实测含 FTS5（见 docs/DECISIONS.md 实施期决策）。
+sqlite3:
+  source: system
+  name_windows: winsqlite3.dll

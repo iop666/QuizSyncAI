@@ -1,0 +1,56 @@
+# Flutter / Dart
+.dart_tool/
+.packages
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+
+# Windows 构建产物
+apps/desktop/windows/flutter/ephemeral/
+**/runner/Release/
+**/runner/Debug/
+*.pdb
+
+# Android 构建产物与签名（绝不提交）
+apps/android/android/.gradle/
+apps/android/android/local.properties
+apps/android/android/key.properties
+apps/android/android/app/*.jks
+apps/android/android/app/*.keystore
+*.keystore
+
+# Kotlin/Gradle 工程（Phase 3 起的 android/ 原生内核）
+android/.gradle/
+android/.kotlin/
+android/**/build/
+*.jks
+keystore/
+
+# .NET 工程（Phase 5 起的 windows/ 内核）
+windows/**/bin/
+windows/**/obj/
+*.user
+
+# 运行期数据：数据库、图片缓存、日志、备份
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+data/
+logs/
+backups/
+# 便携版数据目录（应用默认写在 exe 旁边，见 apps/desktop/lib/main.dart）
+userdata/
+*.log
+
+# 字体母版（300MB MiSans 源文件，用户本地提供）；随包的可变字体在
+# apps/desktop/assets/fonts/MiSans-VF.ttf（已提交，不必带这份母版）
+fonts/
+
+# 其他
+*.zip
+dist/
+.DS_Store
+Thumbs.db

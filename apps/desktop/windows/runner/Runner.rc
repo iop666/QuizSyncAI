@@ -1,0 +1,123 @@
+// Microsoft Visual C++ generated resource script.
+//
+#pragma code_page(65001)
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "winres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (United States) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "#include ""winres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_APP_ICON            ICON                    "resources\\app_icon.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+// 版本号（M17 第 3 条：用户要求「版本号统一 1.0.0」）。
+//
+// 刻意不用 Flutter 生成的 `FLUTTER_VERSION`：它是 pubspec 的 `1.0.0+3`，
+// 会把出包序号带进 exe 属性里（显示成 `1.0.0+3`）。产品版本就是 1.0.0。
+//
+// M18 第 1 条：**1.0.0 就是正式版**，前面的序号都只是内部出包序号，
+// 界面（设置 → 关于）与 exe 属性里都不出现它。
+//
+// M32 用户需求 6：Windows 端产品版本升到 **1.0.1**（安卓端本轮不动、后续统一更新）。
+// M46 第 4 条：双端统一到 **1.1.0**。M50：1.1.0 之后的修复线从 **1.2.0** 起。
+// 最后一位（build）仍是 0，不进 exe 属性也不进界面。
+#define VERSION_AS_NUMBER 1,2,1,0
+#define VERSION_AS_STRING "1.2.1"
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION VERSION_AS_NUMBER
+ PRODUCTVERSION VERSION_AS_NUMBER
+ FILEFLAGSMASK VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+ FILEFLAGS VS_FF_DEBUG
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS VOS__WINDOWS32
+ FILETYPE VFT_APP
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904e4"
+        BEGIN
+            VALUE "CompanyName", "iop666" "\0"
+            VALUE "FileDescription", "AI 双端搜题" "\0"
+            VALUE "FileVersion", VERSION_AS_STRING "\0"
+            VALUE "InternalName", "quizsync_desktop" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2026 iop666" "\0"
+            VALUE "OriginalFilename", "quizsync_desktop.exe" "\0"
+            VALUE "ProductName", "AI 双端搜题" "\0"
+            VALUE "ProductVersion", VERSION_AS_STRING "\0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1252
+    END
+END
+
+#endif    // English (United States) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED

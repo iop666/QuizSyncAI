@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 局域网明文 HTTP 是已知且接受的前提（docs/SPEC.md 第 10 节）。
+     Android 的 domain-config 不支持 CIDR 网段，无法枚举任意局域网 IP，
+     因此按契约对客户端整体放行明文（与 android:usesCleartextTraffic 一致）。 -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

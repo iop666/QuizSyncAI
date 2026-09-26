@@ -1,0 +1,96 @@
+name: CI（Flutter/Dart 静态检查 + 单测 + 一致性向量）
+# 内部完整仓库（含 keystore / dist）：CI 只跑静态检查 + 单测 + 向量回放，不构建 APK / Windows 包。
+on:
+  push:
+    # 内部仓默认分支是 master，公开镜像仓是 main —— 两个都要触发。
+    branches: [master, main]
+  pull_request:
+  workflow_dispatch:
+# 同一分支/PR 的新推送取消旧运行
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+env:
+  # pub 缓存固定在工作区内：路径稳定，actions/cache 才能稳定命中
+  PUB_CACHE: ${{ github.workspace }}\.pub-cache
+jobs:
+  # 五个包各一个 job（matrix）；任一包失败 = 整个工作流失败
+  analyze-test:
+    name: ${{ matrix.path }}
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false # 不提前取消兄弟任务：五包都跑完再报
+      matrix:
+        include: # path / analyze / test
+          # 回放用例打了 conformance 标签（要向量目录），普通单测 job 排除它，专属 job 全跑
+          - {path: packages/quizsync_core, analyze: flutter analyze, test: dart test --exclude-tags conformance}
+          - {path: packages/quizsync_ui, analyze: flutter analyze, test: flutter test}
+          - {path: apps/desktop, analyze: flutter analyze, test: flutter test}
+          - {path: apps/android, analyze: flutter analyze, test: flutter test} # 只 analyze + test，不构建 APK
+          - {path: server, analyze: dart analyze, test: dart test} # 纯 Dart CLI
+    steps:
+      - name: 检出仓库
+        uses: actions/checkout@v4
+      - name: 安装 Flutter 3.47.0（stable）
+        uses: subosito/flutter-action@v2
+        with: {channel: stable, flutter-version: 3.47.0, cache: true}
+      - name: 缓存 pub 依赖
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: pub-${{ runner.os }}-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+      - name: 拉取依赖
+        working-directory: ${{ matrix.path }}
+        run: flutter pub get
+      - name: 静态检查
+        working-directory: ${{ matrix.path }}
+        run: ${{ matrix.analyze }}
+      - name: 单测
+        working-directory: ${{ matrix.path }}
+        run: ${{ matrix.test }}
+  # 一致性向量回放：向量只存在于公开协议仓，本仓不留副本
+  conformance:
+    name: 一致性向量回放
+    runs-on: windows-latest
+    steps:
+      - name: 检出本仓
+        uses: actions/checkout@v4
+        with: {path: QuizSync_AI} # 与协议仓平级：core 默认相对路径 ../../../QuizSyncProtocol 才对得上
+      - name: 检出 QuizSyncProtocol（向量来源）
+        uses: actions/checkout@v4
+        with:
+          repository: iop666/QuizSyncProtocol
+          path: QuizSyncProtocol
+      - name: 安装 Flutter 3.47.0（stable）
+        uses: subosito/flutter-action@v2
+        with: {channel: stable, flutter-version: 3.47.0, cache: true}
+      - name: 缓存 pub 依赖
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.PUB_CACHE }}
+          key: pub-conformance-${{ runner.os }}-${{ hashFiles('QuizSync_AI/**/pubspec.lock') }}
+          restore-keys: pub-${{ runner.os }}-
+      - name: 拉取 core 依赖
+        working-directory: QuizSync_AI/packages/quizsync_core
+        run: flutter pub get
+      # 向量在仓库外，用 QS_VECTORS 显式指向 checkout 路径；目录不存在 = 失败（不许静默跳过）
+      - name: 回放 vectors/*.ndjson
+        working-directory: QuizSync_AI/packages/quizsync_core
+        env:
+          QS_VECTORS: ${{ github.workspace }}/QuizSyncProtocol/conformance/vectors
+        run: dart test test/conformance/vector_replay_test.dart
+  # 仓库卫生：不许出现开发机路径、个人设备信息、密钥形态（公开仓的红线，实测踩过）
+  hygiene:
+    name: 仓库卫生自检
+    runs-on: windows-latest
+    steps:
+      - name: 检出本仓
+        uses: actions/checkout@v4
+      - name: 扫描开发机路径 / 个人信息 / 密钥
+        run: python tools/check_no_machine_paths.py .
+      # 第四轮评审判定「两端拉齐：否」，根因是两端各自顺手取值。
+      # 现在样式取值只有 design/tokens.json 一个来源，两端产物由脚本生成 ——
+      # 谁手改了任一侧的产物（或改了 token 忘了重新生成），这一步就会红。
+      - name: 校验跨端设计 token 产物是否与 tokens.json 同源
+        run: python tools/gen_design_tokens.py --check

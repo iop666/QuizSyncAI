@@ -1,0 +1,23 @@
+name: quizsync_ui
+description: "QuizSync AI 两端共享的 Flutter 组件（题目卡片 / 配色 / 会话导航）。"
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.13.0
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  quizsync_core:
+    path: ../quizsync_core
+  flutter_math_fork: ^0.7.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

@@ -1,0 +1,25 @@
+name: quizsync_core
+description: "QuizSync AI 共享核心：协议模型、drift schema、同步引擎、AI 客户端与解析。两端（Windows / Android）共用，纯 Dart。"
+version: 0.1.0
+publish_to: 'none'
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  drift: ^2.20.0
+  crypto: ^3.0.0
+  image: ^4.2.0
+  archive: ^3.6.1
+  dio: ^5.4.0
+  shelf: ^1.4.0
+  shelf_router: ^1.1.0
+  shelf_web_socket: ^3.0.0
+  shelf_multipart: ^2.0.0
+  web_socket_channel: ^3.0.0
+
+dev_dependencies:
+  flutter_lints: ^6.0.0
+  test: ^1.25.0
+  drift_dev: ^2.20.0
+  build_runner: ^2.4.13

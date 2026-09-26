@@ -1,0 +1,6 @@
+# 一致性向量回放要读仓库外的向量目录（由 QS_VECTORS 指定，见 conformance/README.md）。
+# 打了这个标签的用例只在「回放 job」里跑；普通单测 job 用 --exclude-tags conformance 排除，
+# 免得每个包都去拉协议仓。
+tags:
+  conformance:
+    description: 需要一致性向量目录（QS_VECTORS）才能跑的用例

@@ -1,0 +1,32 @@
+{
+  "questions": [
+    {
+      "question_no": "3",
+      "stem": "下列哪些是可再生能源？（多选）",
+      "type": "multi",
+      "options": [
+        { "label": "A", "text": "太阳能" },
+        { "label": "B", "text": "煤炭" },
+        { "label": "C", "text": "风能" },
+        { "label": "D", "text": "水能" }
+      ],
+      "answer": { "choice": ["A", "C", "D"], "text": null },
+      "analysis": "煤炭是不可再生能源。可再生能源包括太阳能、风能、水能等。",
+      "confidence": 0.93,
+      "need_review": false,
+      "has_answer_in_image": false,
+      "warnings": []
+    },
+    {
+      "question_no": "4",
+      "stem": "地球自转的方向是自西向东。",
+      "type": "judge",
+      "answer": { "choice": ["对"], "text": null },
+      "analysis": "地球自西向东自转，这是日月星辰东升西落的原因。",
+      "confidence": 0.99,
+      "need_review": false,
+      "has_answer_in_image": false,
+      "warnings": []
+    }
+  ]
+}

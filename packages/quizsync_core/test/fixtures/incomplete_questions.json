@@ -1,0 +1,49 @@
+{
+  "questions": [
+    {
+      "question_no": null,
+      "stem": "",
+      "type": "single",
+      "options": [],
+      "answer": { "choice": ["B"], "text": null },
+      "analysis": "这一段只有答案没有题干，必须被丢弃。",
+      "confidence": 0.4,
+      "need_review": true,
+      "has_answer_in_image": true,
+      "incomplete": true,
+      "answer_is_guess": false,
+      "warnings": ["只有答案"]
+    },
+    {
+      "question_no": "12",
+      "stem": "下列关于细胞膜结构的叙述，正确的是",
+      "type": "single",
+      "options": [
+        { "label": "A", "text": "磷脂双分子层构成基本骨架" },
+        { "label": "B", "text": "蛋白质分子全部镶在表面" }
+      ],
+      "answer": { "choice": ["A"], "text": null },
+      "analysis": "题干完整但选项被截断，按题意推断 A 最可能正确。",
+      "confidence": 0.55,
+      "need_review": true,
+      "has_answer_in_image": false,
+      "incomplete": true,
+      "answer_is_guess": true,
+      "warnings": ["选项不全"]
+    },
+    {
+      "question_no": "(3)",
+      "stem": "计算 1+1 的值。",
+      "type": "blank",
+      "options": [],
+      "answer": { "choice": [], "text": "2" },
+      "analysis": "直接相加。",
+      "confidence": 0.99,
+      "need_review": false,
+      "has_answer_in_image": false,
+      "incomplete": false,
+      "answer_is_guess": false,
+      "warnings": []
+    }
+  ]
+}

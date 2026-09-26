@@ -1,0 +1,4 @@
+storePassword=请填口令
+keyPassword=请填口令
+keyAlias=请填别名
+storeFile=../../keystore/quizsync-release.jks

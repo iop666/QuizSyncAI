@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="QuizSync.App.Pages.WelcomePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 欢迎页：页面底色 canvas + 白卡片（圆角 16 + cardStroke 装饰描边），
+         与 Android 侧同一份文案、同一套形制，值全来自共享 token。 -->
+    <Grid Background="{ThemeResource QsCanvasBrush}" RowDefinitions="*,Auto">
+        <Border
+            Grid.Row="0"
+            Style="{StaticResource QsCardStyle}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Width="460">
+            <StackPanel Spacing="16">
+                <TextBlock
+                    x:Name="BrandText"
+                    Text="AI 双端搜题"
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    HorizontalAlignment="Center"
+                    Foreground="{ThemeResource QsOnSurfaceBrush}" />
+                <TextBlock
+                    Text="电脑截屏搜题，答案同时出现在电脑和手机上"
+                    Style="{StaticResource QsSecondaryTextStyle}"
+                    TextAlignment="Center" />
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+                    <Border Style="{StaticResource QsTagBorderStyle}">
+                        <TextBlock Style="{StaticResource QsTagTextStyle}" Text="局域网直连" />
+                    </Border>
+                    <Border Style="{StaticResource QsTagBorderStyle}">
+                        <TextBlock Style="{StaticResource QsTagTextStyle}" Text="双端同步" />
+                    </Border>
+                    <Border Style="{StaticResource QsTagBorderStyle}">
+                        <TextBlock Style="{StaticResource QsTagTextStyle}" Text="无需账号" />
+                    </Border>
+                </StackPanel>
+
+                <StackPanel Spacing="8" Margin="0,4,0,0">
+                    <TextBlock Text="三步开始" FontWeight="SemiBold"
+                               Style="{StaticResource QsSecondaryTextStyle}" />
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border Width="22" Height="22" CornerRadius="11" BorderThickness="1"
+                                BorderBrush="{ThemeResource QsOutlineBrush}" VerticalAlignment="Center">
+                            <TextBlock Text="1" FontSize="12" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{ThemeResource QsOnSurfaceVariantBrush}" />
+                        </Border>
+                        <TextBlock Text="电脑：点「显示配对码」" Style="{StaticResource QsBodyTextStyle}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border Width="22" Height="22" CornerRadius="11" BorderThickness="1"
+                                BorderBrush="{ThemeResource QsOutlineBrush}" VerticalAlignment="Center">
+                            <TextBlock Text="2" FontSize="12" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{ThemeResource QsOnSurfaceVariantBrush}" />
+                        </Border>
+                        <TextBlock Text="手机：输入电脑上的 6 位配对码" Style="{StaticResource QsBodyTextStyle}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <Border Width="22" Height="22" CornerRadius="11" BorderThickness="1"
+                                BorderBrush="{ThemeResource QsOutlineBrush}" VerticalAlignment="Center">
+                            <TextBlock Text="3" FontSize="12" HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Foreground="{ThemeResource QsOnSurfaceVariantBrush}" />
+                        </Border>
+                        <TextBlock Text="任一端截屏，答案同时出现在两端" Style="{StaticResource QsBodyTextStyle}"
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </StackPanel>
+
+                <Button
+                    x:Name="FindHostButton"
+                    Content="显示配对码"
+                    Style="{StaticResource QsPrimaryButtonStyle}"
+                    HorizontalAlignment="Stretch"
+                    Margin="0,4,0,0"
+                    Click="OnShowPairCodeClick" />
+
+                <HyperlinkButton
+                    x:Name="DiagnosticsButton"
+                    Content="查看诊断信息"
+                    HorizontalAlignment="Center"
+                    Click="OnDiagnosticsClick" />
+            </StackPanel>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource QsStatusBarBorderStyle}">
+            <TextBlock
+                x:Name="StatusText"
+                Style="{StaticResource QsStatusTextStyle}"
+                Text="已就绪，可开始搜题" />
+        </Border>
+    </Grid>
+</Page>

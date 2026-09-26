@@ -1,0 +1,5 @@
+# Windows 内核的 .NET 分析器口径（与 QuizSyncServer 同一套纪律：警告即错误）。
+[*.cs]
+# 协议词汇里选项就叫 `option`（`ai-contract.md` / `options[]` 字段），改名会偏离契约用词。
+# CA1716 只是提醒「VB 里 Option 是关键字」，本仓库没有 VB 消费者。
+dotnet_diagnostic.CA1716.severity = none

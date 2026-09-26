@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 原生 UI 的主题基底：真正的配色由 Compose 主题（QsTokens，跨端设计 token）负责，
+         这里只给启动窗口一个不闪白的底色，避免冷启动时先白一下再变深色。
+         底色取 token 生成的 @color/qs_surface（values-night 里有对应的深色值），
+         这样启动窗口与首屏底色也同源，不再各写一个字面量。 -->
+    <style name="Theme.QuizSync" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/qs_surface</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+</resources>

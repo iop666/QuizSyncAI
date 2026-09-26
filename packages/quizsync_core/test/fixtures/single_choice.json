@@ -1,0 +1,21 @@
+{
+  "questions": [
+    {
+      "question_no": "12",
+      "stem": "下列关于二力平衡的说法中，正确的是",
+      "type": "single",
+      "options": [
+        { "label": "A", "text": "两个力大小相等即可" },
+        { "label": "B", "text": "作用在同一物体上、大小相等、方向相反、作用在同一直线上" },
+        { "label": "C", "text": "方向相反的两个力" },
+        { "label": "D", "text": "作用在两个物体上的力" }
+      ],
+      "answer": { "choice": ["B"], "text": null },
+      "analysis": "二力平衡需要同时满足同体、等大、反向、共线四个条件，故选 B。",
+      "confidence": 0.96,
+      "need_review": false,
+      "has_answer_in_image": false,
+      "warnings": []
+    }
+  ]
+}

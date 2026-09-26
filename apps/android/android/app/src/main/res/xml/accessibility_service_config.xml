@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 无障碍备选截屏路径：不监听任何事件、不读取屏幕内容，只借用 takeScreenshot 能力。
+     注意 canTakeScreenshot 必须为 true：缺少该能力时 takeScreenshot() 会以
+     「Services don't have the capability of taking the screenshot」直接失败。 -->
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes=""
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagDefault"
+    android:canRetrieveWindowContent="false"
+    android:canTakeScreenshot="true"
+    android:description="@string/accessibility_capture_desc"
+    android:notificationTimeout="100" />

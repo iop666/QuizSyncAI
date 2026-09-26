@@ -1,0 +1,7 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  errors:
+    # 与主项目同口径：不允许有未使用的东西混进来。
+    unused_import: error
+    unused_local_variable: error

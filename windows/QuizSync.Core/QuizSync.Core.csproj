@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!-- 语言无关核心的 C# 移植（计划 §7.2）：Question 模型、prompt、解析、标色。
+       纯计算，不碰文件系统与网络，对测试与无界面模式都友好。 -->
+
+</Project>
