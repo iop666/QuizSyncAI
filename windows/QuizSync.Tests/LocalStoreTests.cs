@@ -79,18 +79,36 @@ public sealed class LocalStoreTests
         }
     }
 
+    /// <summary>
+    /// 第十轮**改了这条的断言**（原为 `WriteLocal_ignores_columns_outside_the_whitelist`，
+    /// 断言「白名单外的字段被忽略、不进 op」）。原断言是错的，理由：
+    ///
+    /// 它钉住的是「未知字段静默吞掉」。而 `sessions` 的白名单当时漏了 `ai_provider` / `ai_model`，
+    /// 于是调用方明明传了 model，库里却没有这一列 —— **没有任何报错**，界面上只表现成
+    /// 「历史行显示未知模型」。同一类漏配会持续悄悄丢数据。
+    ///
+    /// 而且「本地专属列不进 op」这个语义在 C# 这边并没有真实用例：`questions` 的每一个真实列
+    /// 都在白名单里（`lamport` / `field_clocks_json` 由 `WriteLocal` 自己管），
+    /// 那条测试用的是**不存在的列名** `local_only_column`。所以现在改成：本地写入给了白名单外的
+    /// 字段就**当场炸**，白名单必须与协议 schema 对齐。真需要只写本地的列，走原生 SQL。
+    /// </summary>
     [Fact]
-    public void WriteLocal_ignores_columns_outside_the_whitelist()
+    public void WriteLocal_rejects_fields_outside_the_whitelist_instead_of_silently_dropping_them()
     {
         var store = NewStore("windows-local", out var database);
         using (database)
         {
-            var op = store.WriteLocal(
-                SyncEntities.Question,
-                "q-1",
-                new Dictionary<string, object?> { ["session_id"] = "s-1", ["ordinal"] = 0L, ["stem"] = "题", ["type"] = "single_choice", ["created_at"] = 1L, ["updated_at"] = 1L, ["updated_by"] = "t", ["local_only_column"] = "不该进 op" });
-            Assert.NotNull(op);
-            Assert.DoesNotContain("local_only_column", op!.Fields.Keys);
+            var fields = new Dictionary<string, object?>
+            {
+                ["session_id"] = "s-1", ["ordinal"] = 0L, ["stem"] = "题", ["type"] = "single",
+                ["created_at"] = 1L, ["updated_at"] = 1L, ["updated_by"] = "t",
+                ["ai_model"] = "漏在白名单外的字段",
+            };
+
+            var error = Assert.Throws<ArgumentException>(
+                () => store.WriteLocal(SyncEntities.Question, "q-1", fields));
+
+            Assert.Contains("ai_model", error.Message, StringComparison.Ordinal);
         }
     }
 

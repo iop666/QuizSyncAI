@@ -90,7 +90,26 @@ public sealed partial class SolvePage : Page
                     new AnalysisCache(database),
                     new QuotaGuard(database),
                     deviceId: "windows-local");
-                return await engine.AnalyzeImageAsync(shot.Jpeg, shot.ImageHash, config).ConfigureAwait(false);
+                var result = await engine.AnalyzeImageAsync(shot.Jpeg, shot.ImageHash, config).ConfigureAwait(false);
+
+                // 识别成功就落库（走 LocalStore → 生成同步 op，手机端能拉到）。
+                // 失败或空结果不落库：库里留一堆空会话比不记更糟。
+                if (result.Ok)
+                {
+                    var store = new LocalStore(database, "windows-local");
+                    SessionRecorder.Record(
+                        store,
+                        shot.ImageHash,
+                        "windows-local",
+                        [.. result.Questions.Select(Map)],
+                        now: DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                        aiProvider: config.ProviderId,
+                        aiModel: config.Model,
+                        latencyMs: result.LatencyMs,
+                        cached: result.FromCache);
+                }
+
+                return result;
             }).ConfigureAwait(true);
 
             Render(outcome);
@@ -104,6 +123,22 @@ public sealed partial class SolvePage : Page
             CaptureButton.IsEnabled = true;
         }
     }
+
+    /// <summary>
+    /// `Question` → 落库用的字段。**题型走 `QuestionTypes.Wire`**（协议值是
+    /// `single`/`multi`/`judge`/`blank`/`subjective`），不要自己拼字符串 ——
+    /// 手写 `single_choice` 之类在库里能存下，但对方端 `IsKnown` 不认。
+    /// </summary>
+    private static RecordedQuestion Map(Question question) => new(
+        Ordinal: question.Ordinal,
+        Stem: question.Stem,
+        Type: question.Type.Wire(),
+        QuestionNo: question.QuestionNo,
+        AnswerText: question.AnswerText,
+        Analysis: question.Analysis,
+        Choice: question.Choice,
+        Confidence: question.Confidence,
+        NeedReview: question.NeedReview);
 
     private void Render(AnalysisOutcome outcome)
     {

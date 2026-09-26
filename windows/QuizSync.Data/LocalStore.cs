@@ -18,6 +18,9 @@ public sealed class LocalStore
         [
             "image_hash", "source_device", "status", "question_count", "cached", "collection_id",
             "created_at", "updated_at", "updated_by", "deleted_at", "task_id", "error_message", "latency_ms",
+            // 第十轮补：这几列原来**不在白名单里**，于是 `ai_provider` / `ai_model` 被静默丢掉 ——
+            // 界面上历史行显示「未知模型」，而调用方明明传了 model。白名单必须与 schema 对齐。
+            "ai_provider", "ai_model", "prompt_version", "raw_response", "error_code",
         ]),
         [SyncEntities.Question] = ("questions", "question_id",
         [
@@ -70,7 +73,13 @@ public sealed class LocalStore
         {
             if (!allowed.Contains(field))
             {
-                continue;
+                // **不再静默丢弃**（第十轮教训）：原来 `continue` 掉，于是白名单少一列就悄悄丢数据 ——
+                // `ai_model` 就是这么丢的，界面上只表现成「未知模型」，没有任何报错。
+                // 本地写入的字段都是调用方有意给的，不认识就是白名单与 schema 脱节，必须当场炸。
+                throw new ArgumentException(
+                    $"实体 {entity} 的列白名单里没有 {field}；请同步更新 LocalStore.Entities（它必须与协议 schema 对齐），"
+                    + "否则这个字段会被写不进去、也进不了同步 op。",
+                    nameof(fields));
             }
 
             if (existing is not null && ValuesEqual(existing.GetValueOrDefault(field), value))

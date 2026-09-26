@@ -1,0 +1,33 @@
+﻿tyId);
+            Assert.Equal(SyncOpTypes.Upsert, created.OpType);
+            // fields_json ֻװ�����Ķ����ֶΣ�������Ǵ���ȥ���Ǽ�������
+            Assert.Contains("answer_text", created.Fields.Keys);
+            Assert.Contains("stem", created.Fields.Keys);
+            Assert.DoesNotContain("analysis", created.Fields.Keys);
+
+            // ͬһ�仰��дһ�Σ�û��ʵ�ʸĶ� �� **������ op**������ˢһ�ѿ� op����
+            var again = store.WriteLocal(SyncEntities.Question, "q-1", Question("s-1", "A"));
+            Assert.Null(again);
+
+            // ��һ���ֶΣ�ֻ����һ���ֶΡ�
+            var changed = store.WriteLocal(
+                SyncEntities.Question, "q-1", new Dictionary<string, object?> { ["answer_text"] = "B" });
+            Assert.NotNull(changed);
+            Assert.Single(changed!.Fields);
+            Assert.Equal("B", changed.Fields["answer_text"]);
+            Assert.True(changed.Lamport > created.Lamport, "����дҪ�ƽ� Lamport");
+        }
+    }
+
+    [Fact]
+    public void WriteLocal_ignores_columns_outside_the_whitelist()
+    {
+        var store = NewStore("windows-local", out var database);
+        using (database)
+        {
+            var op = store.WriteLocal(
+                SyncEntities.Question,
+                "q-1",
+                new Dictionary<string, object?> { ["session_id"] = "s-1", ["ordinal"] = 0L, ["stem"] = "��", ["type"] = "single_choice", ["created_at"] = 1L, ["updated_at"] = 1L, ["updated_by"] = "t", ["local_only_column"] = "���ý� op" });
+            Assert.NotNull(op);
+            Assert.DoesNotContain("local_only_column"

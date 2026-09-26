@@ -18,6 +18,9 @@ public sealed partial class WelcomePage : Page
     private void OnSolveClick(object sender, RoutedEventArgs e) =>
         Frame.Navigate(typeof(SolvePage));
 
+    private void OnHistoryClick(object sender, RoutedEventArgs e) =>
+        Frame.Navigate(typeof(HistoryPage));
+
     /// <summary>
     /// 诊断读数（表数 / 提示词版本）**按需展开**，不常驻首屏状态条（评审：状态条只说用户语言）。
     /// </summary>
