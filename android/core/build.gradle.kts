@@ -15,7 +15,11 @@ dependencies {
     // 不赌系统 SQLite 版本 —— Phase 3 计划 §12 点名的风险项就是它。
     api("androidx.sqlite:sqlite-bundled:2.7.1")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    // kotlinx-serialization-json 要 **api**：`:core` 的公共 API 直接泄漏了它的类型
+    // （`SyncOp.fields_json: Map<String, JsonElement>`、`HostResponse.jsonObject()`），
+    // 用 implementation 的话调用方（`:app`）拿不到这些类型、编译不过。
+    // 这正是 Gradle 的规则：公共 API 里出现的类型必须 api 导出。
+    api("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.2")
 
     // HTTP 客户端：Android 上没有 java.net.http（API 34 才有），所以按计划用 OkHttp。

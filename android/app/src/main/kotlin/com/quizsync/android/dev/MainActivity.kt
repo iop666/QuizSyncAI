@@ -65,6 +65,8 @@ class MainActivity : ComponentActivity() {
         val schema = readSchemaAsset()
         val deviceId = deviceId()
         val store = PairStore(this)
+        // 记录存储要在整个 Activity 生命周期里用（拉取 → 落库 → 读页面），所以建在这里而不是组合里。
+        val records = RecordStore(this, schema)
         setContent {
             // 明暗跟随系统；两套配色都来自同一份 token（与 Windows 的 ThemeDictionaries 同源）。
             MaterialTheme(
@@ -76,12 +78,15 @@ class MainActivity : ComponentActivity() {
                 ) {
                     // 深链进来就直接落到配对页并自动提交，用户不用手输地址与码。
                     var showPair by remember { mutableStateOf(false) }
+                    var showRecords by remember { mutableStateOf(false) }
                     var pairedHost by remember { mutableStateOf(store.host) }
                     LaunchedEffect(pendingPair) {
                         if (pendingPair != null) showPair = true
                     }
-                    if (showPair) {
-                        PairScreen(
+                    val host = pairedHost
+                    val token = store.token
+                    when {
+                        showPair -> PairScreen(
                             deviceId = deviceId,
                             store = store,
                             prefill = pendingPair,
@@ -96,11 +101,20 @@ class MainActivity : ComponentActivity() {
                                 showPair = false
                             },
                         )
-                    } else {
-                        HomeScreen(
+
+                        showRecords -> RecordsScreen(
+                            store = records,
+                            deviceId = deviceId,
+                            pairedHost = host,
+                            token = token,
+                            onBack = { showRecords = false },
+                        )
+
+                        else -> HomeScreen(
                             schemaSql = schema,
-                            pairedHost = pairedHost,
+                            pairedHost = host,
                             onShowPairCode = { showPair = true },
+                            onShowRecords = { showRecords = true },
                             onUnpair = {
                                 store.clear()
                                 pairedHost = null
@@ -139,6 +153,7 @@ private fun HomeScreen(
     schemaSql: String,
     pairedHost: String?,
     onShowPairCode: () -> Unit,
+    onShowRecords: () -> Unit,
     onUnpair: () -> Unit,
 ) {
     val paired = !pairedHost.isNullOrEmpty()
@@ -217,6 +232,11 @@ private fun HomeScreen(
                         TextButton(onClick = { status = "诊断：$diagnostics" }) {
                             Text("查看诊断信息", style = MaterialTheme.typography.labelLarge)
                         }
+                    }
+
+                    // 记录页：电脑识别出的结果同步过来的地方（未配对时进去也会给准确指引）。
+                    TextButton(onClick = onShowRecords) {
+                        Text("记录", style = MaterialTheme.typography.labelLarge)
                     }
                 }
             }
