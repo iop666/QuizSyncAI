@@ -28,36 +28,37 @@ enum class ApplyResult {
  */
 class SyncApplier(private val connection: SQLiteConnection) {
 
-    private data class Target(val table: String, val idColumn: String, val columns: Set<String>)
+    private data class Target(val table: String, val idColumn: String)
 
+    /// 实体 → 表。**只写「表名」与「主键列」** —— 列清单不再手写。
+    ///
+    /// 原来这里每张表都手写了一份列清单，与协议 schema 是**两处维护**：
+    /// 客户端 C#（第十轮）与服务端 C#（第十五轮）都因为漏了 `ai_model` 而**静默丢字段**，
+    /// 这里是**第三处**（Android 实测：服务端 `sessions.ai_model` 有值，手机上却是空的）。
+    /// 现在列清单**只有一个来源：表本身**（见 [columnsOf]）。
     private val targets: Map<String, Target> = mapOf(
-        SyncEntity.SESSION to Target(
-            "sessions", "session_id",
-            setOf(
-                "image_hash", "source_device", "status", "question_count", "cached", "collection_id",
-                "created_at", "updated_at", "updated_by", "deleted_at", "task_id", "error_message",
-                "latency_ms",
-            ),
-        ),
-        SyncEntity.QUESTION to Target(
-            "questions", "question_id",
-            setOf(
-                "session_id", "ordinal", "question_no", "stem", "material", "type", "options_json",
-                "choice_json", "answer_text", "analysis", "confidence", "need_review",
-                "answer_in_image", "incomplete", "answer_guessed", "warnings_json",
-                "analysis_edited", "answer_edited", "created_at", "updated_at", "updated_by",
-                "deleted_at",
-            ),
-        ),
-        SyncEntity.COLLECTION to Target(
-            "collections", "collection_id",
-            setOf("name", "created_at", "updated_at", "updated_by", "deleted_at"),
-        ),
-        SyncEntity.SESSION_IMAGE to Target(
-            "session_images", "session_image_id",
-            setOf("session_id", "ordinal", "image_hash", "created_at", "deleted_at"),
-        ),
+        SyncEntity.SESSION to Target("sessions", "session_id"),
+        SyncEntity.QUESTION to Target("questions", "question_id"),
+        SyncEntity.COLLECTION to Target("collections", "collection_id"),
+        SyncEntity.SESSION_IMAGE to Target("session_images", "session_image_id"),
     )
+
+    private val columnCache = mutableMapOf<String, Set<String>>()
+
+    /// 某张表**实际存在**的列 —— 唯一来源是库本身（`PRAGMA table_info`）。
+    /// 仍然防注入：列名取自库、不是取自网络，网络来的字段名只能**匹配**已有列。
+    private fun columnsOf(table: String): Set<String> = columnCache.getOrPut(table) {
+        val columns = mutableSetOf<String>()
+        val statement = connection.prepare("PRAGMA table_info(\"$table\")")
+        try {
+            while (statement.step()) {
+                columns += statement.getText(1)
+            }
+        } finally {
+            statement.close()
+        }
+        columns
+    }
 
     fun apply(op: SyncOp): ApplyResult {
         if (opExists(op.op_id)) return ApplyResult.DUPLICATE
@@ -109,7 +110,7 @@ class SyncApplier(private val connection: SQLiteConnection) {
 
         val winners = mutableMapOf<String, kotlinx.serialization.json.JsonElement?>()
         for ((field, value) in op.fields_json) {
-            if (field !in target.columns) continue // 白名单：不认识的列一律丢弃
+            if (field !in columnsOf(target.table)) continue // 只认表里真有的列（见 columnsOf 的说明）
             val clock = clocks[field]
             if (clock != null && clock.losesTo(op)) continue
             winners[field] = value

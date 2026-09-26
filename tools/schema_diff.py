@@ -6,11 +6,24 @@
 """
 
 import io
+import os
 import re
 import sqlite3
+import sys
 
-PROTOCOL = r"D:\ZCode\QuizSyncProtocol\schema\schema-v1.sql"
-SERVER_DB = r"D:\ZCode\QuizSyncServer\src\QuizSync.Server.Cli\bin\Debug\net10.0\userdata\quizsync.db"
+# 路径一律从参数或环境变量来 —— **不要把开发机的绝对路径写进仓库**
+# （这条被仓库卫生自检抓到过一次）。用法：
+#   python tools/schema_diff.py <协议仓目录> <服务端库文件>
+_protocol = (sys.argv[1] if len(sys.argv) > 1 else os.environ.get("QS_PROTOCOL_DIR", "")).strip()
+_server_db = (sys.argv[2] if len(sys.argv) > 2 else os.environ.get("QS_SERVER_DB", "")).strip()
+if not _protocol or not _server_db:
+    raise SystemExit(
+        "用法：python tools/schema_diff.py <协议仓目录> <服务端库文件>\n"
+        "（也可用环境变量 QS_PROTOCOL_DIR / QS_SERVER_DB）"
+    )
+
+PROTOCOL = os.path.join(_protocol, "schema", "schema-v1.sql")
+SERVER_DB = _server_db
 
 
 def parse_protocol(path: str) -> dict[str, dict[str, dict]]:

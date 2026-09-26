@@ -39,7 +39,7 @@ data class QuestionRow(
  *    （Windows 侧就是在这里抛了 `index ... already exists`）；
  * 2. 拉取要带 **本地水位**（`applier.watermark()`），否则每次都全量重拉。
  */
-class RecordStore(context: Context, schemaSql: String) {
+class RecordStore(context: Context, schemaSql: String, private val selfDeviceId: String) {
     private val file = File(context.filesDir, "quizsync.db")
     private val database: QuizSyncDatabase =
         if (file.exists()) QuizSyncDatabase.openExisting(file.absolutePath)
@@ -49,19 +49,48 @@ class RecordStore(context: Context, schemaSql: String) {
 
     /**
      * 从主机拉 op 并应用。返回本次应用了几条（0 表示没有新东西）。
-     * 网络或解析出错**原样抛出**，由界面显示 —— 不吞掉，否则「没有新记录」与「拉取失败」分不清。
+     *
+     * **`from_device` 是「要拉谁的 op」**（`spec/04-http-api.md` §1.3.13 / §1.4.3 写得很明确：
+     * 它是**来源设备**维度，既不是「我」也不是「发给谁」）。第十五轮实测栽在这里：我传的是
+     * **手机自己的 deviceId** → 等价于「只拉我自己产生的 op」→ 屏幕上显示「已从主机拉取 0 条 op」，
+     * 而服务端库里有 op。
+     *
+     * 所以这里按协议的做法来：**对每个来源设备各拉一次** —— 主机自己的 `/info.device_id`
+     * （主机直接产生的改动）加上 `/devices` 里所有已配对设备（排除自己）。
+     * 游标暂用 0（全量重拉）：applier 按 `op_id` 幂等，重复投递是安全的；
+     * 「每个来源设备各自一条独立游标」是协议里的模型，作为后续优化（现在这点数据量不值得先做）。
      */
-    fun sync(host: String, token: String, deviceId: String): Int {
+    fun sync(host: String, token: String): Int {
         val api = HostApi(host)
         api.setToken(token)
-        val response = api.pullOps(fromDevice = deviceId, sinceLamport = applier.watermark())
-        if (response.status !in 200..299) {
-            error("主机返回 ${response.status}" + (response.string("message")?.let { "：$it" } ?: ""))
+
+        val sources = linkedSetOf<String>()
+        api.info().string("device_id")?.takeIf { it.isNotBlank() }?.let { sources += it }
+        for (element in api.devices().jsonObject()["devices"]?.jsonArray ?: emptyList()) {
+            element.jsonObject["device_id"]?.toString()?.trim('"')
+                ?.takeIf { it.isNotBlank() }?.let { sources += it }
+        }
+        sources -= selfDeviceId
+
+        if (sources.isEmpty()) {
+            // 没有任何来源设备：只可能是「服务端没报告自己的 device_id」，如实说出来。
+            error("主机没有可拉取的来源设备（/info 与 /devices 都没给 device_id）")
         }
 
-        val ops = response.jsonObject()["ops"]?.jsonArray?.map { SyncOp.parse(it) } ?: emptyList()
-        ops.forEach { applier.apply(it) }
-        return ops.size
+        var applied = 0
+        for (source in sources) {
+            val response = api.pullOps(fromDevice = source, sinceLamport = 0)
+            if (response.status !in 200..299) {
+                error("拉取 $source 的 op 失败：${response.status}"
+                    + (response.string("message")?.let { "：$it" } ?: ""))
+            }
+
+            val ops = response.jsonObject()["ops"]?.jsonArray?.map { SyncOp.parse(it) } ?: emptyList()
+            ops.forEach { applier.apply(it) }
+            applied += ops.size
+        }
+
+        return applied
     }
 
     fun sessions(limit: Int = 50): List<SessionRow> {

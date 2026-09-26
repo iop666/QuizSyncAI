@@ -66,7 +66,7 @@ class MainActivity : ComponentActivity() {
         val deviceId = deviceId()
         val store = PairStore(this)
         // 记录存储要在整个 Activity 生命周期里用（拉取 → 落库 → 读页面），所以建在这里而不是组合里。
-        val records = RecordStore(this, schema)
+        val records = RecordStore(this, schema, deviceId)
         setContent {
             // 明暗跟随系统；两套配色都来自同一份 token（与 Windows 的 ThemeDictionaries 同源）。
             MaterialTheme(
@@ -104,7 +104,6 @@ class MainActivity : ComponentActivity() {
 
                         showRecords -> RecordsScreen(
                             store = records,
-                            deviceId = deviceId,
                             pairedHost = host,
                             token = token,
                             onBack = { showRecords = false },

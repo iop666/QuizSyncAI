@@ -44,7 +44,6 @@ import java.util.Locale
 @Composable
 fun RecordsScreen(
     store: RecordStore,
-    deviceId: String,
     pairedHost: String?,
     token: String?,
     onBack: () -> Unit,
@@ -142,7 +141,7 @@ fun RecordsScreen(
                     scope.launch {
                         status = withContext(Dispatchers.IO) {
                             runCatching {
-                                val count = store.sync(pairedHost, token, deviceId)
+                                val count = store.sync(pairedHost, token)
                                 "已从主机拉取 $count 条 op"
                             }.getOrElse { error ->
                                 "拉取失败：${error.message ?: error::class.simpleName}"

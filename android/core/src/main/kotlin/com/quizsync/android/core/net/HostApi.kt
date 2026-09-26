@@ -107,6 +107,9 @@ class HostApi(
     /** `GET /api/v1/collections`。 */
     fun collections(): HostResponse = get("/api/v1/collections")
 
+    /** `GET /api/v1/devices`（已配对设备列表；用来知道「该从哪些来源设备拉 op」）。 */
+    fun devices(): HostResponse = get("/api/v1/devices")
+
     /** `POST /api/v1/sync/ops`（推 op；`applied` / `rejected` 两个计数由服务端给）。 */
     fun pushOps(opsJson: String): HostResponse =
         postRaw("/api/v1/sync/ops", opsJson)
