@@ -39,18 +39,20 @@ windows/**/obj/
 *.sqlite-wal
 *.sqlite-shm
 data/
-logs/
-backups/
+/logs/
+/backups/
 # 便携版数据目录（应用默认写在 exe 旁边，见 apps/desktop/lib/main.dart）
-userdata/
+/userdata/
 *.log
 
 # 字体母版（300MB MiSans 源文件，用户本地提供）；随包的可变字体在
 # apps/desktop/assets/fonts/MiSans-VF.ttf（已提交，不必带这份母版）
-fonts/
+# 注意必须加前导斜杠：`fonts/` 会匹配任意层级的 fonts 目录，
+# 连随包字体 apps/desktop/assets/fonts/ 一起吞掉（新导出仓里 CI 就是这么红的）。
+/fonts/
 
 # 其他
 *.zip
-dist/
+/dist/
 .DS_Store
 Thumbs.db

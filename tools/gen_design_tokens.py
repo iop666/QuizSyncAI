@@ -38,6 +38,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 TOKENS = ROOT / "design" / "tokens.json"
 
+# 控制台编码：Windows CI runner 上 Python 的 stdout 是 **cp1252**，打印中文会抛
+# UnicodeEncodeError —— 于是「校验全部通过、却在打印成功信息那一行崩掉」，报错还看不出跟校验有关
+# （实测：新仓第一次 CI 的 token 校验就是这么红的，栈顶停在 `print(f"设计 token 一致：…")`）。
+# 这里显式把两个流改成 UTF-8；改不了（被重定向成非文本流）就跳过。
+for _stream in (sys.stdout, sys.stderr):
+    if hasattr(_stream, "reconfigure"):
+        _stream.reconfigure(encoding="utf-8", errors="replace")
+
 KOTLIN_OUT = ROOT / "android/app/src/main/kotlin/com/quizsync/android/dev/DesignTokens.kt"
 ANDROID_VALUES_OUT = ROOT / "android/app/src/main/res/values/design_tokens.xml"
 ANDROID_VALUES_NIGHT_OUT = ROOT / "android/app/src/main/res/values-night/design_tokens.xml"
