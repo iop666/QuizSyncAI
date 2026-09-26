@@ -79,6 +79,7 @@ public sealed partial class SolvePage : Page
                        + $"，JPEG {shot.Jpeg.Length / 1024} KB", secondary: true);
             StatusText.Text = "正在识别…";
 
+            string? pushNotice = null;
             var outcome = await Task.Run(async () =>
             {
                 // 本地库用**应用自己的**目录：服务端那个库是另一套结构（没有 analysis_cache），
@@ -89,28 +90,34 @@ public sealed partial class SolvePage : Page
                     new HttpAiProvider(config.ProviderId, http),
                     new AnalysisCache(database),
                     new QuotaGuard(database),
-                    deviceId: "windows-local");
+                    deviceId: SyncUploader.DeviceId);
                 var result = await engine.AnalyzeImageAsync(shot.Jpeg, shot.ImageHash, config).ConfigureAwait(false);
 
-                // 识别成功就落库（走 LocalStore → 生成同步 op，手机端能拉到）。
-                // 失败或空结果不落库：库里留一堆空会话比不记更糟。
+                // 识别成功就落库（走 LocalStore → 生成同步 op），然后**推给主机** ——
+                // 不推的话手机端永远拉不到（第十一轮只能用脚本给服务端播种才验到 Android 拉取）。
                 if (result.Ok)
                 {
-                    var store = new LocalStore(database, "windows-local");
+                    var store = new LocalStore(database, SyncUploader.DeviceId);
                     SessionRecorder.Record(
                         store,
                         shot.ImageHash,
-                        "windows-local",
+                        SyncUploader.DeviceId,
                         [.. result.Questions.Select(Map)],
                         now: DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
                         aiProvider: config.ProviderId,
                         aiModel: config.Model,
                         latencyMs: result.LatencyMs,
                         cached: result.FromCache);
+                    pushNotice = await TryPushAsync(database).ConfigureAwait(false);
                 }
 
                 return result;
             }).ConfigureAwait(true);
+
+            if (!string.IsNullOrWhiteSpace(pushNotice))
+            {
+                ShowNotice(pushNotice!, secondary: true);
+            }
 
             Render(outcome);
         }
@@ -121,6 +128,35 @@ public sealed partial class SolvePage : Page
         finally
         {
             CaptureButton.IsEnabled = true;
+        }
+    }
+
+    /// <summary>
+    /// 推送到主机。**任何失败都只返回一句话、不抛** —— 本地记录已经落库了，
+    /// 推不上去不该让这次识别看起来失败（网络/主机状态是暂时性的）。
+    /// </summary>
+    private static async Task<string?> TryPushAsync(QuizDatabase database)
+    {
+        try
+        {
+            var probe = await new QuizSync.ServerBridge.HostDiscovery().ProbeAsync().ConfigureAwait(false);
+            if (probe is null)
+            {
+                return "主机未启动：改动只留在本机（启动 QuizSync.Server.Cli run 后再点一次即可同步）";
+            }
+
+            var directory = HostDataDirectory.Find();
+            var controlToken = directory is null ? null : QuizSync.ServerBridge.HostControl.FindControlToken(directory);
+            if (controlToken is null)
+            {
+                return "读不到控制令牌：改动只留在本机";
+            }
+
+            return await SyncUploader.PushPendingAsync(database, probe.BaseUrl, controlToken).ConfigureAwait(false);
+        }
+        catch (Exception error)
+        {
+            return $"推送失败（改动仍在本机）：{error.Message}";
         }
     }
 
