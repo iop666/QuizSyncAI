@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Page
+    x:Class="QuizSync.App.Pages.SettingsPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!-- 设置页（第一版）：只做「AI 配置」这一件 —— 没它用户填不了 Key，应用只能靠环境变量跑。 -->
+    <Grid Background="{ThemeResource QsCanvasBrush}" RowDefinitions="*,Auto">
+        <Border
+            Grid.Row="0"
+            Style="{StaticResource QsCardStyle}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            Width="520"
+            Margin="0,24">
+            <Grid RowDefinitions="Auto,*,Auto">
+                <StackPanel Grid.Row="0" Spacing="8">
+                    <TextBlock Text="设置" FontSize="24" FontWeight="SemiBold"
+                               Foreground="{ThemeResource QsOnSurfaceBrush}" />
+                    <TextBlock Style="{StaticResource QsSecondaryTextStyle}"
+                               Text="AI 配置。留空则回退到环境变量（QS_AI_*）。" />
+                </StackPanel>
+
+                <ScrollViewer Grid.Row="1" Margin="0,16,0,0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel Spacing="14">
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="接口形态（provider）" Style="{StaticResource QsTagTextStyle}" />
+                            <TextBox x:Name="ProviderBox" AutomationProperties.Name="provider 输入框" PlaceholderText="openai-compatible" />
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="接口地址（BaseUrl，留空用默认）" Style="{StaticResource QsTagTextStyle}" />
+                            <TextBox x:Name="BaseUrlBox" AutomationProperties.Name="baseurl 输入框" PlaceholderText="例如 https://api.deepseek.com/v1" />
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="API Key" Style="{StaticResource QsTagTextStyle}" />
+                            <PasswordBox x:Name="ApiKeyBox" AutomationProperties.Name="apikey 输入框" PlaceholderText="粘贴你的 Key" />
+                            <TextBlock Style="{StaticResource QsSecondaryTextStyle}"
+                                       Text="⚠️ 目前明文存在本机 userdata/ai.json（与设备令牌同一处理）；接 DPAPI 是下一轮的事。" />
+                        </StackPanel>
+                        <StackPanel Spacing="4">
+                            <TextBlock Text="模型名（model）" Style="{StaticResource QsTagTextStyle}" />
+                            <TextBox x:Name="ModelBox" AutomationProperties.Name="model 输入框" PlaceholderText="例如 deepseek-chat" />
+                        </StackPanel>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <StackPanel Grid.Row="2" Spacing="8" Margin="0,16,0,0">
+                    <Button x:Name="SaveButton" Content="保存" Style="{StaticResource QsPrimaryButtonStyle}"
+                            HorizontalAlignment="Stretch" Click="OnSaveClick" />
+                    <HyperlinkButton Content="返回" HorizontalAlignment="Center" Click="OnBackClick" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1" Style="{StaticResource QsStatusBarBorderStyle}">
+            <TextBlock x:Name="StatusText" Style="{StaticResource QsStatusTextStyle}" Text="读取当前配置…" />
+        </Border>
+    </Grid>
+</Page>

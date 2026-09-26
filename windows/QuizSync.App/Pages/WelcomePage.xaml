@@ -87,6 +87,12 @@
                     Click="OnHistoryClick" />
 
                 <Button
+                    x:Name="SettingsButton"
+                    Content="设置"
+                    HorizontalAlignment="Stretch"
+                    Click="OnSettingsClick" />
+
+                <Button
                     x:Name="FindHostButton"
                     Content="显示配对码"
                     HorizontalAlignment="Stretch"

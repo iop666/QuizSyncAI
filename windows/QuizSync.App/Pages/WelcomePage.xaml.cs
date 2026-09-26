@@ -18,6 +18,9 @@ public sealed partial class WelcomePage : Page
     private void OnSolveClick(object sender, RoutedEventArgs e) =>
         Frame.Navigate(typeof(SolvePage));
 
+    private void OnSettingsClick(object sender, RoutedEventArgs e) =>
+        Frame.Navigate(typeof(SettingsPage));
+
     private void OnHistoryClick(object sender, RoutedEventArgs e) =>
         Frame.Navigate(typeof(HistoryPage));
 
